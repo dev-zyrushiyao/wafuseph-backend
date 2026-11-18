@@ -15,10 +15,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-
 
 
 @Entity
@@ -32,12 +35,20 @@ public class UserAccount {
     @GeneratedValue(strategy=GenerationType.UUID)
     private UUID id;
 
+
+    @NotBlank(message = "Email is required")
+    @Email(message="Email must be valid")
+    @Size(max = 50, message = "Email must be at most 50 characters")
     @Column(name="email", length=50, nullable=false, unique=true)
     private String email;
 
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, max = 100, message = "Password must be 8-100 characters")
     @Column (length=100 , nullable=false)
     private String password;
     
+    @NotBlank(message = "Name is required")
+    @Size(max = 20, message = "Name must be at most 20 characters")
     @Column (length=20, nullable=false)
     private String name;
     
@@ -49,6 +60,7 @@ public class UserAccount {
     @Column (name="updated_at", nullable=true)
     private Instant updatedAt;
 
+    @NotNull 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 

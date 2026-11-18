@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vtuber.wafuseph_backend.DTO.LoginRequest;
 import com.vtuber.wafuseph_backend.model.UserAccount;
 import com.vtuber.wafuseph_backend.service.UserAccountService;
+
+import jakarta.validation.Valid;
 
 
 
@@ -24,7 +27,7 @@ public class UserAccountController {
     }
     
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserAccount userAccount) {
+    public ResponseEntity<String> register(@Valid  @RequestBody UserAccount userAccount) {
         boolean created = userAccountService.registerUser(userAccount);
 
         if(!created){
@@ -33,5 +36,16 @@ public class UserAccountController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Account registered");
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
+        boolean loginSuccess = userAccountService.loginUser(loginRequest);
+
+        if(loginSuccess){
+            return ResponseEntity.status(HttpStatus.OK).body("Login success");
+        }
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+    }
+    
     
 }
