@@ -39,13 +39,14 @@ public class UserAccountController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
-        boolean loginSuccess = userAccountService.loginUser(loginRequest);
+        String loginSuccess = userAccountService.loginUser(loginRequest);
 
-        if(loginSuccess){
-            return ResponseEntity.status(HttpStatus.OK).body("Login success");
+        if(loginSuccess != null && !loginSuccess.isEmpty()){
+            return ResponseEntity.status(HttpStatus.OK).body(loginSuccess);
         }
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
     }
     
+
     
 }

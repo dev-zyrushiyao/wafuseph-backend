@@ -1,4 +1,4 @@
-package com.vtuber.wafuseph_backend.util;
+package com.vtuber.wafuseph_backend.security;
 
 public final class EmailNormalizer {
 
