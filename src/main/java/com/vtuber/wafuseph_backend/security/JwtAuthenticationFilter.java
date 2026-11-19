@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -35,18 +36,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // boolean valid = jwtService.isTokenValid(token);
             // System.out.println("Token valid: " + valid);    
 
-            if (jwtService.isTokenValid(token)
+            
+            try{
+                if (jwtService.isTokenValid(token)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
 
+                    String role = jwtService.extractRole(token);
+                    List<SimpleGrantedAuthority> authorities =
+                    (role == null || role.isBlank())
+                     ? List.of()
+                     : List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
                 String subject = jwtService.extractSubject(token);
-
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(subject, null, List.of());
+                        new UsernamePasswordAuthenticationToken(subject, null, authorities);
 
+                           //Stored in Authentication Class for controller
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+                    }
+            } catch (Exception ex){
+                SecurityContextHolder.clearContext();
+            }    
+            
         }
 
         filterChain.doFilter(request, response);
     }
+
+
 }

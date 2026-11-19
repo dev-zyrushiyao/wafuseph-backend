@@ -26,16 +26,22 @@ public class JwtService {
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(String subject) {
+    public String generateToken(String subject , String role) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
                 .subject(subject)
+                .claim("role", role)
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(signingKey)
                 .compact();
+               
+    }
+
+    public String extractRole(String token) {
+    return parseAllClaims(token).get("role", String.class);
     }
 
     public String extractSubject(String token) {

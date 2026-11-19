@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vtuber.wafuseph_backend.DTO.LoginRequest;
+import com.vtuber.wafuseph_backend.DTO.RegistrationRequest;
 import com.vtuber.wafuseph_backend.model.UserAccount;
 import com.vtuber.wafuseph_backend.repository.UserAccountRepo;
 import com.vtuber.wafuseph_backend.security.EmailNormalizer;
@@ -26,19 +27,19 @@ public class UserAccountService {
     }
 
 
-    //service methods
-    public Optional<UserAccount> findByEmail(String email){
-        return userAccountRepo.findByEmail(email);
-    }
 
-    public boolean registerUser(UserAccount userAccount){
+    public boolean registerUser(RegistrationRequest registrationRequest){
         //search if account email exist
-        Optional<UserAccount> searchedAccount = findByEmail(EmailNormalizer.normalize(userAccount.getEmail()));
+        Optional<UserAccount> account = userAccountRepo.findByEmail(EmailNormalizer.normalize(registrationRequest.email()));
 
         
-        if(searchedAccount.isEmpty()){
-            userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
-            userAccountRepo.save(userAccount);
+        if(account.isEmpty()){
+            UserAccount newUser = new UserAccount();
+            newUser.setEmail(registrationRequest.email());
+            newUser.setPassword(passwordEncoder.encode(registrationRequest.password()));
+            newUser.setName(registrationRequest.name());
+            newUser.setGender(registrationRequest.gender());
+            userAccountRepo.save(newUser);
             return true;
         }
         //return false if an email is already exist and did not execute the register
@@ -51,13 +52,13 @@ public class UserAccountService {
 
     public String loginUser(LoginRequest request){
         //search if email exist in the database
-       Optional<UserAccount> user = findByEmail(EmailNormalizer.normalize(request.email()));
+       Optional<UserAccount> user = userAccountRepo.findByEmail(EmailNormalizer.normalize(request.email()));
 
        if(user.isPresent()){
         UserAccount account = user.get();
   
             if(passwordEncoder.matches(request.password(), account.getPassword())){
-            return jwtService.generateToken(account.getEmail());
+            return jwtService.generateToken(account.getEmail() , account.getRole().name());
             } 
        }
 
