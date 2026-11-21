@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vtuber.wafuseph_backend.DTO.LoginRequest;
+import com.vtuber.wafuseph_backend.DTO.LoginResponse;
 import com.vtuber.wafuseph_backend.DTO.RegistrationRequest;
 import com.vtuber.wafuseph_backend.model.UserAccount;
 import com.vtuber.wafuseph_backend.repository.UserAccountRepo;
@@ -50,15 +51,17 @@ public class UserAccountService {
         userAccountRepo.deleteById(id);
     }
 
-    public String loginUser(LoginRequest request){
+    public LoginResponse loginUser(LoginRequest request){
         //search if email exist in the database
        Optional<UserAccount> user = userAccountRepo.findByEmail(EmailNormalizer.normalize(request.email()));
 
        if(user.isPresent()){
         UserAccount account = user.get();
-  
+        
             if(passwordEncoder.matches(request.password(), account.getPassword())){
-            return jwtService.generateToken(account.getEmail() , account.getRole().name());
+                String token = jwtService.generateToken(account.getEmail() , account.getRole().name());
+                LoginResponse loginResponse = new LoginResponse(token, "Bearer" , account.getEmail() , account.getName(), account.getRole().name());
+                return loginResponse;
             } 
        }
 

@@ -14,29 +14,26 @@ import com.vtuber.wafuseph_backend.service.ContactService;
 
 import jakarta.validation.Valid;
 
-
-
-@RestController 
+@RestController
 @RequestMapping("/api/contact")
 public class ContactController {
 
     private final ContactService contactService;
 
-    public ContactController(ContactService contactService){
+    public ContactController(ContactService contactService) {
         this.contactService = contactService;
     }
 
     @PostMapping("/inquiry")
-    public ResponseEntity<Map<String,String>> inquiry(@Valid @RequestBody ContactRequest contactRequest) {
-        
+    public ResponseEntity<Map<String, String>> inquiry(@Valid @RequestBody ContactRequest contactRequest) {
+
         boolean posted = contactService.saveContact(contactRequest);
 
-        if(posted) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "message send successfully"));
+        if (posted) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("contactStatus", "message sent successfully"));
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message" , "message failed to send"));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("contactStatus", "message failed to send"));
     }
-    
-    
+
 }

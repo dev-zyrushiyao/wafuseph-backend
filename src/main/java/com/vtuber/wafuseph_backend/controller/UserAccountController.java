@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vtuber.wafuseph_backend.DTO.LoginRequest;
+import com.vtuber.wafuseph_backend.DTO.LoginResponse;
 import com.vtuber.wafuseph_backend.DTO.RegistrationRequest;
 import com.vtuber.wafuseph_backend.service.UserAccountService;
 
@@ -42,13 +43,14 @@ public class UserAccountController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
-        String loginSuccess = userAccountService.loginUser(loginRequest);
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = userAccountService.loginUser(loginRequest);
 
-        if(loginSuccess != null && !loginSuccess.isEmpty()){
-            return ResponseEntity.status(HttpStatus.OK).body(loginSuccess);
+        if(loginResponse != null){
+   
+            return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
         }
-          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message" , "Invalid login credentials"));
     }
 
     
