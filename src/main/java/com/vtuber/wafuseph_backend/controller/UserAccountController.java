@@ -1,5 +1,7 @@
 package com.vtuber.wafuseph_backend.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +16,6 @@ import com.vtuber.wafuseph_backend.service.UserAccountService;
 import jakarta.validation.Valid;
 
 
-
-
 @RestController
 @RequestMapping("/api/users")
 public class UserAccountController {
@@ -27,14 +27,18 @@ public class UserAccountController {
     }
     
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid  @RequestBody RegistrationRequest registrationRequest) {
-        boolean created = userAccountService.registerUser(registrationRequest);
+    public ResponseEntity<Map<String, String>> register(@Valid  @RequestBody RegistrationRequest registrationRequest) {
+             boolean created = userAccountService.registerUser(registrationRequest);
 
-        if(!created){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already registered");
-        }
+    if (!created) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("registrationStatus", "Account already exist"));
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Account registered");
+    return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(Map.of("registrationStatus", "Account successfully registered"));
     }
 
     @PostMapping("/login")
@@ -46,13 +50,6 @@ public class UserAccountController {
         }
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
     }
-
-    // @GetMapping ("/me")
-    // public ResponseEntity<String> sampleApi(Authentication authentication){
-    //     String email = authentication.getName();
-
-    //     return ResponseEntity.ok("Authenticated as " + email);
-    // }
 
     
 }
