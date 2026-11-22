@@ -31,7 +31,7 @@ public class Announcement {
     private String imageUrl;
     
     
-    @Column(nullable=false)
+    @Column(nullable=false, unique=true)
     private String title;
 
     @Column(name="sub_title" , nullable=true)

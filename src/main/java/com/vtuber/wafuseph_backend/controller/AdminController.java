@@ -1,5 +1,7 @@
 package com.vtuber.wafuseph_backend.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,14 +27,14 @@ public class AdminController {
     }
 
     @PostMapping("/announcement/post")
-    public ResponseEntity<String> postAnnouncement(@Valid @RequestBody AnnouncementRequest announcementRequest ){
+    public ResponseEntity<?> postAnnouncement(@Valid @RequestBody AnnouncementRequest announcementRequest ){
 
         boolean posted = announcementService.createAnnouncement(announcementRequest);
 
         if(posted){
-            return ResponseEntity.status(HttpStatus.CREATED).body("Announcement posted successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message" , "Announcement posted successfully"));
         }
         
-          return ResponseEntity.status(HttpStatus.CONFLICT).body("Announcement post failed");
+          return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message" , "Announcement post failed" ));
     }
 }

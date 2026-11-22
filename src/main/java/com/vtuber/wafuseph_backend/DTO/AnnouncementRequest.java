@@ -1,7 +1,6 @@
 package com.vtuber.wafuseph_backend.DTO;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record  AnnouncementRequest (
@@ -11,14 +10,13 @@ public record  AnnouncementRequest (
     @Size(min = 10, max = 50, message = "Title needs to be 10~50 characters")
     String title,
 
-    @Size(max = 30, message = "Title needs to be 10~50 characters")
+    @Size(max = 30, message = "Subtitle only accept max of 30 characters")
     String subTitle,
     
     @NotBlank(message = "Slug is required")
     String slug,
 
-    @NotNull (message="Content is required")
-    @NotBlank (message="Content should not be empty")
+    @NotBlank (message="Content is required")
     String content
 
 ) {}
