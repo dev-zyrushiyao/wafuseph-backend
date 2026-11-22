@@ -3,6 +3,7 @@ package com.vtuber.wafuseph_backend.service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.vtuber.wafuseph_backend.DTO.AnnouncementRequest;
 import com.vtuber.wafuseph_backend.model.Announcement;
@@ -17,7 +18,7 @@ public class AnnouncementService {
         this.announcementRepo = announcementRepo;
     }
 
-    public boolean createAnnouncement(AnnouncementRequest request){
+    public boolean createAnnouncement(AnnouncementRequest request , Optional<MultipartFile> file){ //or @Nullable MultipartFile file
 
         Optional<Announcement> existing = announcementRepo.findBySlug(request.slug());
 
@@ -31,6 +32,10 @@ public class AnnouncementService {
             announcement.setSlug(request.slug());
             announcement.setContent(request.content());
             // announcement.setImageUrl(null);
+            
+            if(file != null && !file.isEmpty()){
+                announcement.setImageUrl(file.get().getOriginalFilename());
+            }
 
             announcementRepo.save(announcement);
             return true;
