@@ -44,9 +44,10 @@ public class Announcement {
     private String content; 
 
     @Setter(AccessLevel.NONE)
+    @Column (name="created_at" , nullable=false)
     private Instant createdAt;
 
-    @Setter(AccessLevel.NONE)
+    @Column (name="updated_at")
     private Instant updatedAt;
     
     @PrePersist

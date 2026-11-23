@@ -1,5 +1,6 @@
 package com.vtuber.wafuseph_backend.controller;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class AdminController {
     }
 
     @PostMapping(value="/announcement/post" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> postAnnouncement(@Valid @RequestPart("announcementData") AnnouncementRequest announcementRequest , @RequestPart(value = "file", required = false) Optional<MultipartFile> file ){
+    public ResponseEntity<?> postAnnouncement(@Valid @RequestPart("announcementData") AnnouncementRequest announcementRequest , @RequestPart(value = "file", required = false) Optional<MultipartFile> file ) throws IOException{
         IO.println(announcementRequest);
         IO.println(file);
 

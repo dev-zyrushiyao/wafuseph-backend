@@ -28,7 +28,8 @@ public class SecurityConfig {
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers( HttpMethod.POST, "/api/users/login" , "/api/users/register").permitAll()
-                .requestMatchers( HttpMethod.POST, "/api/contact/inquiry").permitAll()
+                .requestMatchers( HttpMethod.POST, "/api/contact/**").permitAll()
+                .requestMatchers( HttpMethod.GET, "/api/visitor/**").permitAll() //visitor main webpage fetch announcements
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/auth/**").hasAnyRole("USER" , "ADMIN")
                 .anyRequest().authenticated()
