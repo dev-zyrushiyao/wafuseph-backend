@@ -1,7 +1,6 @@
 package com.vtuber.wafuseph_backend.exception;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,18 +20,13 @@ public class GlobalExceptionHandler {
 @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
 
-        //returns as response to javascript (react-form registration)
-        Map<String, String> errors = new HashMap<>();
+        Map<String, String> fieldErrors = new HashMap<>();
 
-        //extracts the field of errors and put it in a Map 
-        //sample value: {"email": "Must be a valid email"}
-        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
-        fieldErrors.forEach((error)-> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-
+    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+        fieldErrors.put(error.getField(), error.getDefaultMessage());
+    }
         //return the value as HTTPstatus body to be displayed in frontend
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(fieldErrors);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
